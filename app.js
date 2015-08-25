@@ -1,12 +1,50 @@
+var restify = require('restify');
+
+var server = restify.createServer({
+    name: 'myapp'
+});
+
+
+function send(req, res, next){
+    res.send('hello ' + req.params.name);
+    return next();
+}
+
+
+server.post('/hello', function create(req, res, next){
+    res.send(201, Math.random().toString(36).substr(3, 8));
+    return next();
+});
+server.put('/hello', send);
+//server.get('/hello/:name', send);
+server.get(/^\/([a-zA-Z0-9_\.~-]+)\/(.*)/, send);
+server.head('/hello/:name', send);
+server.del('hello/:name', function rm(req, res, next) {
+    res.send(204);
+    return next();
+});
+
+server.listen(3000, function(){
+    console.log('%s listening at %s', server.name, server.url);
+});
+
+/**
+ * express
+ * @type {*|exports|module.exports}
+ */
+    /*
 var express = require('express');
+var path = require('path');
 var app = express();
 
 //routes
 var index = require('./routes/index');
 var users = require('./routes/users');
+//var blog = require('./routes/blog');
 
 app.use('/', index);
 app.use('/users', users);
+//app.use('/blog', blog);
 
 //app.get('/', function (req, res) {
 //    res.send('Hello');
@@ -39,12 +77,13 @@ app.use('/users', users);
 //app.get('/example/c', [cb0, cb1, cb2]);
 
 //app.use(express.static('public'));
-app.use('/static', express.static('public'));
+app.use('/static', express.static(path.join(__dirname, 'public')));
+
 
 
 var server = app.listen(3000, function () {
     var host = server.address().address;
     var port = server.address().port;
-
     console.log('Example app listening at http://%s:%s', host, port);
 });
+        */
